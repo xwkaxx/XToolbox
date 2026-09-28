@@ -1,0 +1,10 @@
+﻿# Visual Studio 本地缓存和个人设置
+.vs/
+*.vcxproj.user
+*.suo
+
+# 编译输出
+/Build/
+
+# ImGui 窗口布局
+imgui.ini

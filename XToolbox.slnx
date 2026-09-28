@@ -1,0 +1,8 @@
+<Solution>
+  <Configurations>
+    <Platform Name="x64" />
+    <Platform Name="x86" />
+  </Configurations>
+  <Project Path="ImGui/ImGui.vcxproj" Id="755bc75b-4e0f-47c6-ae95-ca0cef08fc46" />
+  <Project Path="XToolbox/XToolbox.vcxproj" Id="65b5a853-d1fe-48fe-896d-f6fd7e2d8899" />
+</Solution>
