@@ -21,8 +21,8 @@
   <PropertyGroup Label="Globals">
     <VCProjectVersion>18.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>
-    <ProjectGuid>{65b5a853-d1fe-48fe-896d-f6fd7e2d8899}</ProjectGuid>
-    <RootNamespace>XToolbox</RootNamespace>
+    <ProjectGuid>{eec5a1f5-51de-47a5-9db0-fe117f17762a}</ProjectGuid>
+    <RootNamespace>SerialTool</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -84,7 +84,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -102,7 +102,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <LanguageStandard>stdcpp17</LanguageStandard>
+      <LanguageStandard>stdcpp20</LanguageStandard>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -133,9 +133,9 @@
     </Manifest>
     <PostBuildEvent>
       <Command>if not exist "$(TargetDir)assets\fonts" mkdir "$(TargetDir)assets\fonts"
-copy /Y "$(ProjectDir)assets\fonts\SourceHanSansCN-Regular.otf" "$(TargetDir)assets\fonts\SourceHanSansCN-Regular.otf"
+copy /Y "$(ProjectDir)..\XToolbox\assets\fonts\SourceHanSansCN-Regular.otf" "$(TargetDir)assets\fonts\SourceHanSansCN-Regular.otf"
 if errorlevel 1 exit /b 1
-copy /Y "$(ProjectDir)assets\fonts\OFL.txt" "$(TargetDir)assets\fonts\OFL.txt"
+copy /Y "$(ProjectDir)..\XToolbox\assets\fonts\OFL.txt" "$(TargetDir)assets\fonts\OFL.txt"
 if errorlevel 1 exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
@@ -162,23 +162,19 @@ if errorlevel 1 exit /b 1</Command>
     </Manifest>
     <PostBuildEvent>
       <Command>if not exist "$(TargetDir)assets\fonts" mkdir "$(TargetDir)assets\fonts"
-copy /Y "$(ProjectDir)assets\fonts\SourceHanSansCN-Regular.otf" "$(TargetDir)assets\fonts\SourceHanSansCN-Regular.otf"
+copy /Y "$(ProjectDir)..\XToolbox\assets\fonts\SourceHanSansCN-Regular.otf" "$(TargetDir)assets\fonts\SourceHanSansCN-Regular.otf"
 if errorlevel 1 exit /b 1
-copy /Y "$(ProjectDir)assets\fonts\OFL.txt" "$(TargetDir)assets\fonts\OFL.txt"
+copy /Y "$(ProjectDir)..\XToolbox\assets\fonts\OFL.txt" "$(TargetDir)assets\fonts\OFL.txt"
 if errorlevel 1 exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="..\ImGui\ImGui.vcxproj">
       <Project>{755bc75b-4e0f-47c6-ae95-ca0cef08fc46}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\main.cpp" />
-    <ClCompile Include="launcher_ui.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="launcher_ui.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
