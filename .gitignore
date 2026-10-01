@@ -2,6 +2,7 @@
 .vs/
 *.vcxproj.user
 *.suo
+*.aps
 
 # 编译输出
 /Build/

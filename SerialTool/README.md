@@ -2,16 +2,16 @@
 
 SerialTool 是 XToolbox 解决方案中的独立 Windows 串口工具，使用 C++、Dear ImGui 和 DirectX 11 实现。支持串口连接、原始字节收发、定时发送及收发记录显示，可直接运行 `SerialTool.exe`，也可由 XToolbox 启动器打开。
 
-本文说明当前源码结构、已实现功能、构建测试方式及维护边界。状态更新于 **2026-10-01**。
+本文说明当前源码结构、已实现功能、构建方式及维护边界。状态更新于 **2026-10-01**。
 
 ## 当前状况
 
 已完成通信、应用流程、数据模型和 UI 的职责拆分，并将对应的 `.cpp` 与 `.h` 放在同一功能目录中。`ui/serial_ui.cpp` 负责资源生命周期、主题与面板组合；串口操作、工作线程和业务流程分别由通信会话及控制器管理。
 
-最近一次目录整理后的验证结果：
+验证状态：
 
-- 主程序 `Debug | x64` 编译、链接通过。
-- 独立测试项目编译通过，全部 **12 组回归测试**通过。
+- 目录整理阶段主程序 `Debug | x64` 曾编译、链接通过；后续注释补充及提交补全尚未重新编译，历史结果不代表当前提交已验证。
+- 当前源码不包含 `tests/` 目录或独立测试项目；按维护约定不新增测试代码。
 - 本轮重构尚未进行真实串口设备收发及实际界面交互验证。
 - `Release | x64` 和 Win32 配置未在本轮验证；目前以 `Debug | x64` 为开发基线。
 
@@ -58,10 +58,6 @@ SerialTool/
 │  ├─ serial_ui_widgets.cpp/.h       # 公共绘制控件及图标资源集合
 │  ├─ serial_window.cpp/.h           # 标题栏绘制与 Win32 命中测试
 │  └─ image_texture.cpp/.h           # 嵌入图片解码与 DX11 纹理加载
-├─ tests/
-│  ├─ serial_models_tests.cpp        # 编辑器和历史模型测试、测试入口
-│  ├─ serial_session_tests.cpp       # 模拟传输及控制器流程测试
-│  └─ serial_models_tests.vcxproj    # 独立控制台测试项目
 ├─ assets/icons/                    # 图片资源源文件
 ├─ resource.h                       # 资源 ID
 ├─ SerialTool.rc                    # 嵌入资源定义
@@ -70,6 +66,8 @@ SerialTool/
 ```
 
 仓库级依赖位于上级目录：`../ImGui/` 为 ImGui 静态库项目，`../ThirdParty/imgui/` 为子模块源码，`../ThirdParty/nlohmann/` 提供 JSON 库。构建时从 `../XToolbox/assets/fonts/` 复制字体及许可证到程序输出目录。
+
+JSON 库的 `ThirdParty/nlohmann/json.hpp` 与 `ThirdParty/nlohmann/LICENSE.MIT` 必须一起纳入版本控制；仅在本地保留头文件会导致其他开发者检出后无法编译。Visual Studio 资源编辑器缓存 `*.aps` 由仓库根目录的 `.gitignore` 排除，资源定义 `.rc`、`resource.h` 和图标源文件仍需提交。
 
 ## 模块协作与线程边界
 
@@ -150,23 +148,11 @@ msbuild .\SerialTool\SerialTool.vcxproj /p:Configuration=Debug /p:Platform=x64 "
 
 连续发送延时从上一帧写入完成后计算，还受同步读取、驱动和线程调度影响，不提供硬实时的周期保证。
 
-## 回归测试
+## 验证与问题反馈
 
-测试项目位于 `tests/serial_models_tests.vcxproj`，当前没有加入主解决方案，需单独构建。以下命令同样在仓库根目录的 Developer PowerShell 执行：
+后续维护不新增测试代码。代码修改通过源码检查和适用配置的编译检查确认基本一致性；真实设备收发、驱动行为及界面交互由项目维护者实际使用并反馈异常，再据此定位修复。
 
-```powershell
-msbuild .\SerialTool\tests\serial_models_tests.vcxproj /p:Configuration=Debug /p:Platform=x64
-.\Build\tests\x64\Debug\serial_models_tests.exe
-```
-
-当前 12 组测试覆盖：
-
-- 编辑器：全部 256 种字节的格式往返、编辑时保留未改动字节、无效转换及草稿与有效提交的区别。
-- 历史模型：合并边界、容量裁剪和计数、两种清空操作。
-- 通信会话：收发与记录标记、定时发送及任务代次、部分写入和故障重连、队列上限及关闭顺序、接收缓存上限。
-- 控制器：参数映射、发送快照、CRC 追加和清理流程。
-
-通信测试使用模拟传输，不需要真实串口。控制器测试会在测试 EXE 旁生成配置文件，位置属于 `Build/tests/`，与主程序的配置分开。测试不验证设备驱动、真实线路、屏幕绘制和鼠标键盘交互。
+反馈时可附上串口参数、操作步骤、发送内容、预期与实际结果，以及界面错误提示，便于复现。编译成功不代表真实设备和交互行为已验证，应分别记录验证结果。
 
 ## 当前限制与维护约定
 
@@ -174,4 +160,4 @@ msbuild .\SerialTool\tests\serial_models_tests.vcxproj /p:Configuration=Debug /p
 
 后续修改按职责放置：通信和线程逻辑进入 `communication/`，应用操作进入 `application/`，字节处理与历史规则进入 `models/`，布局和绘制进入 `ui/`。不要在 UI 中直接访问串口句柄、队列锁或工作线程。
 
-新增、移动或删除源文件时，同步更新 `SerialTool.vcxproj`、`SerialTool.vcxproj.filters`、相关 `#include` 及测试项目源码路径。修改通信或数据规则后运行回归测试；修改交互、字体或布局后，还需进行实际界面检查。构建产物统一放在仓库的 `Build/` 下。
+新增、移动或删除源文件时，同步更新 `SerialTool.vcxproj`、`SerialTool.vcxproj.filters`、相关 `#include` 和本文目录说明。修改后检查源码与构建配置的一致性；设备及交互异常按维护者反馈修复。构建产物统一放在仓库的 `Build/` 下。

@@ -1,3 +1,8 @@
+/**
+ * @file main.cpp
+ * @brief 工具箱启动器的 Win32/DX11 宿主。
+ * 基于 Dear ImGui 示例；本文件负责平台生命周期，具体界面由独立 UI 模块绘制。
+ */
 // Dear ImGui: standalone example application for Windows API + DirectX 11
 
 // Learn about Dear ImGui:
@@ -20,6 +25,7 @@
 #include "XToolbox/launcher_ui.h"
 
 // Data
+// 本模块独占这些 COM 引用，均由主线程访问；窗口尺寸只在消息处理器中登记。
 static ID3D11Device*            g_pd3dDevice = nullptr;
 static ID3D11DeviceContext*     g_pd3dDeviceContext = nullptr;
 static IDXGISwapChain*          g_pSwapChain = nullptr;
@@ -35,9 +41,11 @@ void CleanupRenderTarget();
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // Main code
+/// @brief 工具箱启动器入口：建立窗口和图形资源，运行主循环，再按依赖逆序清理。
 int main(int, char**)
 {
     // Make process DPI aware and obtain main monitor scale
+    // DPI 感知必须在创建窗口前启用，确保窗口尺寸与后续命中坐标使用一致的像素体系。
     ImGui_ImplWin32_EnableDpiAwareness();
     float main_scale = ImGui_ImplWin32_GetDpiScaleForMonitor(::MonitorFromPoint(POINT{ 0, 0 }, MONITOR_DEFAULTTOPRIMARY));
 
@@ -72,8 +80,8 @@ int main(int, char**)
     //io.ConfigDockingTransparentPayload = true;
 
     // Setup Dear ImGui style
-    ImGui::StyleColorsDark();
-    //ImGui::StyleColorsLight();
+    //ImGui::StyleColorsDark();
+    ImGui::StyleColorsLight();
 
     // Setup scaling
     ImGuiStyle& style = ImGui::GetStyle();
@@ -90,6 +98,7 @@ int main(int, char**)
     }
 
     // Setup Platform/Renderer backends
+    // 后端依赖原生窗口与 DX11 设备；销毁时先关后端，最后释放底层对象。
     ImGui_ImplWin32_Init(hwnd);
     ImGui_ImplDX11_Init(g_pd3dDevice, g_pd3dDeviceContext);
 
@@ -164,6 +173,7 @@ int main(int, char**)
     }
 
     // Our state
+    // 启动器目前保留 ImGui 示例窗口开关，与实际工具启动状态相互独立。
     bool show_demo_window = true;
     bool show_another_window = false;
     ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
@@ -186,6 +196,7 @@ int main(int, char**)
             break;
 
         // Handle window being minimized or screen locked
+        // 遮挡时只探测是否恢复显示并短暂让出 CPU，避免持续生成不可见帧。
         if (g_SwapChainOccluded && g_pSwapChain->Present(0, DXGI_PRESENT_TEST) == DXGI_STATUS_OCCLUDED)
         {
             ::Sleep(10);
@@ -194,6 +205,7 @@ int main(int, char**)
         g_SwapChainOccluded = false;
 
         // Handle window resize (we don't resize directly in the WM_SIZE handler)
+        // 合并本轮收到的尺寸变化，在帧间处理，避免窗口消息重入期间替换正在使用的渲染目标。
         if (g_ResizeWidth != 0 && g_ResizeHeight != 0)
         {
             CleanupRenderTarget();
@@ -203,6 +215,7 @@ int main(int, char**)
         }
 
         // Start the Dear ImGui frame
+        // 先更新平台与渲染后端，再开始 ImGui 帧；业务绘制必须位于 NewFrame 与 Render 之间。
         ImGui_ImplDX11_NewFrame();
         ImGui_ImplWin32_NewFrame();
         ImGui::NewFrame();
@@ -257,6 +270,7 @@ int main(int, char**)
         // Update and Render additional Platform Windows
         if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
         {
+            // 多视口窗口有独立的交换链，由后端负责更新，不能只渲染主窗口。
             ImGui::UpdatePlatformWindows();
             ImGui::RenderPlatformWindowsDefault();
         }
@@ -268,6 +282,7 @@ int main(int, char**)
     }
 
     // Cleanup
+    // 后端先释放其字体纹理、缓冲等图形对象，再销毁上下文和应用持有的设备引用。
     ImGui_ImplDX11_Shutdown();
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
@@ -280,6 +295,7 @@ int main(int, char**)
 }
 
 // Helper functions
+/// @brief 建立 DX11 设备、上下文和交换链；失败后调用者仍需执行 CleanupDeviceD3D。
 bool CreateDeviceD3D(HWND hWnd)
 {
     // Setup swap chain
@@ -305,6 +321,7 @@ bool CreateDeviceD3D(HWND hWnd)
     D3D_FEATURE_LEVEL featureLevel;
     const D3D_FEATURE_LEVEL featureLevelArray[2] = { D3D_FEATURE_LEVEL_11_0, D3D_FEATURE_LEVEL_10_0, };
     HRESULT res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_HARDWARE, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
+    // 仅硬件能力不支持时回退 WARP；其他失败交给上层清理并结束初始化。
     if (res == DXGI_ERROR_UNSUPPORTED) // Try high-performance WARP software driver if hardware is not available.
         res = D3D11CreateDeviceAndSwapChain(nullptr, D3D_DRIVER_TYPE_WARP, nullptr, createDeviceFlags, featureLevelArray, 2, D3D11_SDK_VERSION, &sd, &g_pSwapChain, &g_pd3dDevice, &featureLevel, &g_pd3dDeviceContext);
     if (res != S_OK)
@@ -324,6 +341,7 @@ bool CreateDeviceD3D(HWND hWnd)
     return true;
 }
 
+/// @brief 释放渲染目标及 DX11 所有者引用并置空，允许部分初始化后的重复清理。
 void CleanupDeviceD3D()
 {
     CleanupRenderTarget();
@@ -332,14 +350,17 @@ void CleanupDeviceD3D()
     if (g_pd3dDevice) { g_pd3dDevice->Release(); g_pd3dDevice = nullptr; }
 }
 
+/// @brief 从交换链后缓冲建立渲染目标视图；初始化和窗口尺寸变化后调用。
 void CreateRenderTarget()
 {
     ID3D11Texture2D* pBackBuffer;
     g_pSwapChain->GetBuffer(0, IID_PPV_ARGS(&pBackBuffer));
     g_pd3dDevice->CreateRenderTargetView(pBackBuffer, nullptr, &g_mainRenderTargetView);
+    // 视图持有底层纹理引用，应用不再需要 GetBuffer 返回的临时引用。
     pBackBuffer->Release();
 }
 
+/// @brief 释放应用持有的目标视图引用，为调整交换链或退出准备。
 void CleanupRenderTarget()
 {
     if (g_mainRenderTargetView) { g_mainRenderTargetView->Release(); g_mainRenderTargetView = nullptr; }
@@ -353,6 +374,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
 // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
 // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
+/// @brief 分派窗口输入及生命周期消息；尺寸变化只登记，图形资源在主循环重建。
 LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, msg, wParam, lParam))
@@ -363,6 +385,7 @@ LRESULT WINAPI WndProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
     case WM_SIZE:
         if (wParam == SIZE_MINIMIZED)
             return 0;
+        // 忽略最小化尺寸，保留最新有效尺寸供主循环一次性消费。
         g_ResizeWidth = (UINT)LOWORD(lParam); // Queue resize
         g_ResizeHeight = (UINT)HIWORD(lParam);
         return 0;
