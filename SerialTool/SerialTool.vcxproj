@@ -125,7 +125,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;windowscodecs.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <Manifest>
@@ -154,7 +154,7 @@ if errorlevel 1 exit /b 1</Command>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>d3d11.lib;dxgi.lib;d3dcompiler.lib;windowscodecs.lib;ole32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <EntryPointSymbol>mainCRTStartup</EntryPointSymbol>
     </Link>
     <Manifest>
@@ -169,12 +169,54 @@ if errorlevel 1 exit /b 1</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ui\serial_connection_panel.cpp" />
+    <ClCompile Include="ui\serial_send_panel.cpp" />
+    <ClCompile Include="ui\serial_output_panel.cpp" />
+    <ClCompile Include="ui\serial_ui_widgets.cpp" />
+    <ClCompile Include="communication\serial_session.cpp" />
+    <ClCompile Include="application\serial_controller.cpp" />
+    <ClCompile Include="models\serial_send_editor.cpp" />
+    <ClCompile Include="models\serial_history.cpp" />
+    <ClCompile Include="communication\serial_devices.cpp" />
+    <ClCompile Include="models\serial_codec.cpp" />
+    <ClCompile Include="ui\serial_window.cpp" />
+    <ClCompile Include="ui\image_texture.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="communication\serial_port.cpp" />
+    <ClCompile Include="application\serial_settings.cpp" />
+    <ClCompile Include="ui\serial_ui.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\ImGui\ImGui.vcxproj">
       <Project>{755bc75b-4e0f-47c6-ae95-ca0cef08fc46}</Project>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ui\serial_connection_panel.h" />
+    <ClInclude Include="ui\serial_send_panel.h" />
+    <ClInclude Include="ui\serial_output_panel.h" />
+    <ClInclude Include="ui\serial_ui_widgets.h" />
+    <ClInclude Include="communication\serial_session.h" />
+    <ClInclude Include="application\serial_controller.h" />
+    <ClInclude Include="models\serial_send_editor.h" />
+    <ClInclude Include="models\serial_history.h" />
+    <ClInclude Include="communication\serial_devices.h" />
+    <ClInclude Include="models\serial_codec.h" />
+    <ClInclude Include="ui\serial_window.h" />
+    <ClInclude Include="ui\image_texture.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="communication\serial_port.h" />
+    <ClInclude Include="application\serial_settings.h" />
+    <ClInclude Include="ui\serial_ui.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SerialTool.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\icons\collapse.png" />
+    <Image Include="assets\icons\expand.png" />
+    <Image Include="assets\icons\serial_connected.png" />
+    <Image Include="assets\icons\serial_disconnected.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

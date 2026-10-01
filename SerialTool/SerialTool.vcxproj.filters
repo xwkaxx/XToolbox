@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <Filter Include="源文件">
@@ -13,10 +13,136 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="communication">
+      <UniqueIdentifier>{79F8928D-16E4-4A7E-A360-6CA55FA16B6C}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="application">
+      <UniqueIdentifier>{8DA2D26B-C4FF-4AF5-BAF6-3BC4722821B7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="models">
+      <UniqueIdentifier>{69025FD2-5619-4E3F-883F-40593BA3947D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ui">
+      <UniqueIdentifier>{1C970252-AA1D-4FD0-99B0-4EB720D4B5CA}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ui\serial_connection_panel.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\serial_send_panel.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\serial_output_panel.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\serial_ui_widgets.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\serial_session.cpp">
+      <Filter>communication</Filter>
+    </ClCompile>
+    <ClCompile Include="application\serial_controller.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="models\serial_send_editor.cpp">
+      <Filter>models</Filter>
+    </ClCompile>
+    <ClCompile Include="models\serial_history.cpp">
+      <Filter>models</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\serial_devices.cpp">
+      <Filter>communication</Filter>
+    </ClCompile>
+    <ClCompile Include="models\serial_codec.cpp">
+      <Filter>models</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\serial_window.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
+    <ClCompile Include="ui\serial_ui.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="ui\image_texture.cpp">
+      <Filter>ui</Filter>
+    </ClCompile>
+    <ClCompile Include="application\serial_settings.cpp">
+      <Filter>application</Filter>
+    </ClCompile>
+    <ClCompile Include="communication\serial_port.cpp">
+      <Filter>communication</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="ui\serial_connection_panel.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\serial_send_panel.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\serial_output_panel.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\serial_ui_widgets.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\serial_session.h">
+      <Filter>communication</Filter>
+    </ClInclude>
+    <ClInclude Include="application\serial_controller.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="models\serial_send_editor.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="models\serial_history.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\serial_devices.h">
+      <Filter>communication</Filter>
+    </ClInclude>
+    <ClInclude Include="models\serial_codec.h">
+      <Filter>models</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\serial_window.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\serial_ui.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="ui\image_texture.h">
+      <Filter>ui</Filter>
+    </ClInclude>
+    <ClInclude Include="application\serial_settings.h">
+      <Filter>application</Filter>
+    </ClInclude>
+    <ClInclude Include="communication\serial_port.h">
+      <Filter>communication</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="SerialTool.rc">
+      <Filter>资源文件</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\icons\serial_connected.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="assets\icons\serial_disconnected.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="assets\icons\collapse.png">
+      <Filter>资源文件</Filter>
+    </Image>
+    <Image Include="assets\icons\expand.png">
+      <Filter>资源文件</Filter>
+    </Image>
   </ItemGroup>
 </Project>
